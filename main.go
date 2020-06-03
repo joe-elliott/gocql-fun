@@ -8,6 +8,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -39,16 +40,26 @@ func main() {
 	}
 	fmt.Println("Tweet:", id, text)
 
-	for {
-		// list all tweets
-		iter := session.Query(`SELECT id, text FROM tweet WHERE timeline = ?`, "me").Iter()
-		for iter.Scan(&id, &text) {
-			fmt.Println("Tweet:", id, text)
-		}
-		if err := iter.Close(); err != nil {
-			log.Println(err)
-		}
+	things := 100
+	wg := sync.WaitGroup{}
 
-		time.Sleep(100 * time.Millisecond)
+	for i := 0; i < things; i++ {
+		wg.Add(1)
+		go func() {
+			for {
+				// list all tweets
+				iter := session.Query(`SELECT id, text FROM tweet WHERE timeline = ?`, "me").Iter()
+				/*for iter99.Scan(&id, &text) {
+					fmt.Println("Tweet:", id, text)
+				}*/
+				if err := iter.Close(); err != nil {
+					log.Println(err)
+				}
+
+				time.Sleep(100 * time.Millisecond)
+			}
+		}()
 	}
+
+	wg.Wait()
 }

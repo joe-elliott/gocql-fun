@@ -8,7 +8,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -41,10 +41,11 @@ func main() {
 	fmt.Println("Tweet:", id, text)
 
 	things := 100
-	wg := sync.WaitGroup{}
+	//wg := sync.WaitGroup{}
+	errs := int64(0)
 
 	for i := 0; i < things; i++ {
-		wg.Add(1)
+		//	wg.Add(1)
 		go func() {
 			for {
 				// list all tweets
@@ -53,7 +54,8 @@ func main() {
 					fmt.Println("Tweet:", id, text)
 				}*/
 				if err := iter.Close(); err != nil {
-					log.Println(err)
+					//log.Println(err)
+					atomic.AddInt64(&errs, 1)
 				}
 
 				time.Sleep(100 * time.Millisecond)
@@ -61,5 +63,10 @@ func main() {
 		}()
 	}
 
-	wg.Wait()
+	for {
+		time.Sleep(5 * time.Second)
+		log.Println(atomic.LoadInt64(&errs))
+	}
+
+	//wg.Wait()
 }

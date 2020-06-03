@@ -1,4 +1,5 @@
 ```
+docker rm -f cassandra
 docker run --name cassandra -d -p 9042:9042 cassandra:3.11.5
 docker run -it --rm cassandra cqlsh 192.168.1.126
 ```

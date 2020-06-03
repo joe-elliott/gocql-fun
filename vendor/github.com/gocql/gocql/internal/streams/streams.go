@@ -20,10 +20,10 @@ type IDGenerator struct {
 }
 
 func New(protocol int) *IDGenerator {
-	maxStreams := 64 // jpe - you changed this
-	/*if protocol > 2 {
+	maxStreams := 128 // jpe - you changed this
+	if protocol > 2 {
 		maxStreams = 32768
-	}*/
+	}
 
 	buckets := maxStreams / 64
 	// reserve stream 0

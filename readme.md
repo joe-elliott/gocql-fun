@@ -3,7 +3,13 @@ docker run --name some-cassandra -d -p 9042:9042 cassandra:latest
 docker run -it --rm cassandra cqlsh 192.168.1.126
 ```
 
-run cql in main.go
+do this crap:
+```
+create keyspace example with replication = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+create table example.tweet(timeline text, id UUID, text text, PRIMARY KEY(id));
+create index on example.tweet(timeline);
+```
+
 
 ```
 go run ./main.go

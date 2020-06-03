@@ -8,6 +8,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/gocql/gocql"
 )
@@ -38,12 +39,16 @@ func main() {
 	}
 	fmt.Println("Tweet:", id, text)
 
-	// list all tweets
-	iter := session.Query(`SELECT id, text FROM tweet WHERE timeline = ?`, "me").Iter()
-	for iter.Scan(&id, &text) {
-		fmt.Println("Tweet:", id, text)
-	}
-	if err := iter.Close(); err != nil {
-		log.Fatal(err)
+	for {
+		// list all tweets
+		iter := session.Query(`SELECT id, text FROM tweet WHERE timeline = ?`, "me").Iter()
+		for iter.Scan(&id, &text) {
+			fmt.Println("Tweet:", id, text)
+		}
+		if err := iter.Close(); err != nil {
+			log.Println(err)
+		}
+
+		time.Sleep(100 * time.Millisecond)
 	}
 }

@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// connect to the cluster
-	cluster := gocql.NewCluster("192.168.1.1", "192.168.1.2", "192.168.1.3")
+	cluster := gocql.NewCluster("127.0.0.1")
 	cluster.Keyspace = "example"
 	cluster.Consistency = gocql.Quorum
 	session, _ := cluster.CreateSession()
